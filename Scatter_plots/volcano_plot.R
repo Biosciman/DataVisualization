@@ -107,4 +107,87 @@ p4<-p3+labs(y="-log10 P Value",x="log2FC")+
 p4
 dev.off()
 
+# 添加箭头；
+# 离得远的才有箭头
+set.seed(007)
+p5 <- p4+geom_text_repel(data=top10sig,aes(logFC,log10PValue,label=Gene),
+                         force=w0,color="grey20",
+                         size=2, # 字体大小
+                         point.padding = 0.5,
+                         hjust = 0.5,
+                         arrow = arrow(length = unit(0.01, "npc"),
+                                       type = "open", ends = "last"), # ends为箭头方向
+                         segment.color="grey20", # 箭头颜色
+                         segment.size=0.2,
+                         segment.alpha=0.8,
+                         nudge_x=0,
+                         nudge_y=0)
+p5
+dev.off()
+
+#自定义图表主题，对图表做精细调整；
+top.mar=0.2
+right.mar=0.2
+bottom.mar=0.2
+left.mar=0.2
+#隐藏纵轴，并对字体样式、坐标轴的粗细、颜色、刻度长度进行限定；
+mytheme<-theme_classic()+
+  theme(text=element_text(family = "sans",colour ="gray30",size = 10),
+        axis.line = element_line(size = 0.6,colour = "gray30"),
+        axis.ticks = element_line(size = 0.6,colour = "gray30"),
+        axis.ticks.length = unit(1.5,units = "mm"),
+        plot.margin=unit(x=c(top.mar,right.mar,bottom.mar,left.mar),
+                         units="inches"))
+#应用自定义主题；
+p5+mytheme
+dev.off()
+
+#添加辅助线；
+p6 <- p4+geom_hline(yintercept = c(-log10(0.05)),
+                    size = 0.5,
+                    color = "orange",
+                    lty = "dashed")+
+  geom_vline(xintercept = c(-1,1),
+             size = 0.5,
+             color = "orange",
+             lty = "dashed")
+p6
+dev.off()
+
+#添加其他样式的标签；
+#为了方便自定义左右区域的标签，这里使用up、down两个独立的子表格；
+# nudge_x/y:数据点与相应数据标签的距离
+# direction:标签分布方向，x表水平分布，y 表示垂直分布，both 表示随机分布；
+# point.padding:表示点周围的空余区域，决定连接线端点到到数据点中心的距离，单位为line。
+p7 <- p6+geom_label_repel(
+  data = up,aes(logFC,log10PValue,label=Gene),
+  nudge_x = 3,
+  nudge_y = -0.8,
+  color = "white",
+  alpha = 0.9,
+  point.padding = 0.5,
+  size = 2.5,
+  fill = "#96C93D",
+  segment.size = 0.5,
+  segment.color = "grey50",
+  direction = "y",
+  hjust = 0.5) +
+  geom_label_repel(
+    data = down,aes(logFC,log10PValue,label=Gene),
+    nudge_x = -3,
+    nudge_y = 0.2,
+    color = "white",
+    alpha = 0.9,
+    point.padding = 0.5,
+    size = 2.5,
+    fill = "#9881F5",
+    segment.size = 0.5,
+    segment.color = "grey50",
+    direction = "y",
+    hjust = 0.5)
+#应用自定义主题；
+p8 <- p7+mytheme
+p8
+dev.off()
+
 
