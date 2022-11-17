@@ -156,6 +156,7 @@ y = [n.yCT nP.yCB];
 % 画直线
 line(x,y,'linewidth',w.linewidth,'color',w.linecolor);
 
+
 function Demo
 %% TreeDiagram>Demo
 % Draws a multi-level tree
